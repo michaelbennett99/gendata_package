@@ -18,8 +18,8 @@ from numba.core.types import float64, int64, int32, boolean
 from pysnptools.snpreader import Bed, SnpData
 from typing import Any, Iterable, Optional, Union, Type
 
-from constants import *
-from cov import make_cov, make_spwindow_cov, make_window_cov
+from ssgac_gendata.constants import *
+from ssgac_gendata.cov import make_cov, make_spwindow_cov, make_window_cov
 
 
 class AbstractGenoData:
@@ -896,7 +896,7 @@ class StdGenoData(AbstractGenoData):
         return ldm_dict
     
 
-    def _calculate_grm(self, individuals: list[str], weights: dict[str, float]):
+    def _calculate_grm(self, individuals: Optional[list[str]] = None, weights: Optional[dict[str, float]] = None):
         """Calculate a full GRM.
 
         Args:
@@ -907,7 +907,10 @@ class StdGenoData(AbstractGenoData):
         Returns:
             np.ndarray: The GRM.
         """
-        gendata = self.filter(iid=individuals)
+        if individuals is not None:
+            gendata = self.filter(iid=individuals)
+        else: # use all individuals
+            gendata = self
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
         grm, _ = make_cov(geno_array)
         return grm
