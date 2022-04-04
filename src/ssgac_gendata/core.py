@@ -894,6 +894,23 @@ class StdGenoData(AbstractGenoData):
             res = p.map(self._calculate_ldm_static, args_list)
         ldm_dict = dict(zip(blocks_list, res))
         return ldm_dict
+    
+
+    def _calculate_grm(self, individuals: list[str], weights: dict[str, float]):
+        """Calculate a full GRM.
+
+        Args:
+            individuals (list[str]): List of individual IDs to include in the
+                GRM.
+            weights (dict[str, float]): Weights to apply to the GRM.
+
+        Returns:
+            np.ndarray: The GRM.
+        """
+        gendata = self.filter(iid=individuals)
+        geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
+        grm, _ = make_cov(geno_array)
+        return grm
 
 
 def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:
