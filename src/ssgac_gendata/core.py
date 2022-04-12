@@ -231,7 +231,7 @@ class AbstractGenoData:
             Type[self]: Genotype data object filtered by MAF.
         """
         # Select valid SNPs
-        condition = self.mind < mind_threshold
+        condition = self.mind <= mind_threshold
         samples = self.mind[condition].index.tolist()
 
         # Create objects
@@ -270,7 +270,7 @@ class AbstractGenoData:
             Type[self]: Genetic data object filtered by geno missingness rate.
         """
         # Select valid SNPs
-        condition = self.geno < geno_threshold
+        condition = self.geno <= geno_threshold
         snps = self.geno[condition].index.tolist()
 
         # Create objects
