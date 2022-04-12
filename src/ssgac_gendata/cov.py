@@ -200,7 +200,7 @@ def make_cov(
     n_var, n_obs = mat.shape
 
     if missing is None:
-        missing = (n_obs - np.count_nonzero(mat, axis=1)) != 0
+        missing = np.sum(np.isnan(mat), axis=1) != 0
 
     # This is the required size of the output
     ldm = np.zeros((n_var, n_var), dtype=np.float32)
