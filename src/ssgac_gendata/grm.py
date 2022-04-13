@@ -4,6 +4,7 @@ Module to hold classes and functions related to genetic relationship matrices.
 
 import numpy as np
 import pandas as pd
+from requests import head
 
 class GRM():
     def __init__(
@@ -13,13 +14,13 @@ class GRM():
         self.ids = ids
         self.n_snps = n_snps
     
-    def write_bin(out_file: str):
+    def write_bin(self, out_file: str):
         """
         Write GRM in GCTA .bin format.
         """
         pass
     
-    def write_gz(out_file: str):
+    def write_gz(self, out_file: str):
         """
         Write GRM in GCTA .gz format.
 
@@ -29,4 +30,17 @@ class GRM():
 
         x.grm.id has no header line; columns are family ID and individual ID.
         """
-        pass
+        ix_tril = np.tril_indices_from(self.grm)
+        
+        gz_df = pd.DataFrame(
+            data={
+                "i": ix_tril[0] + 1, "j": ix_tril[1] + 1,
+                "n": np.tril(self.n_snps)[ix_tril], "a": self.grm[ix_tril]
+            }
+        )
+        gz_df.to_csv(
+            f"{out_file}.gz",
+            sep="\t", index=False, header=False, compression="gzip"
+        )
+
+        self.ids.to_csv(f"{out_file}.id", sep="\t", index=False, header=False)
