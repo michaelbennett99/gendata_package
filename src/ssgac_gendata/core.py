@@ -913,7 +913,7 @@ class StdGenoData(AbstractGenoData):
             gendata = self
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
         grm, non_missing, _ = make_cov(geno_array)
-        return grm
+        return grm, non_missing
 
 
 def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:
