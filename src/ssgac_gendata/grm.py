@@ -28,6 +28,10 @@ class GRM():
         estimate of genetic relatedness.
 
         x.grm.id has no header line; columns are family ID and individual ID.
+
+        Args:
+            out_file (str): Path to write GRM to. Do not include final part of
+                suffix (i.e. .gz or .id).
         """
         ix_tril = np.tril_indices_from(self.grm)
         
