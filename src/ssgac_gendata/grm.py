@@ -4,7 +4,6 @@ Module to hold classes and functions related to genetic relationship matrices.
 
 import numpy as np
 import pandas as pd
-from requests import head
 
 class GRM():
     def __init__(
