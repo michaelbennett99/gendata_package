@@ -20,9 +20,9 @@ def cov(row_i: np.ndarray, row_j: np.ndarray, n_obs: int) -> np.float32:
     Returns:
         float: Covariable between row_i and row_j.
     """
-    return np.float32(np.dot(row_i, row_j) / (n_obs - 1))
+    return np.float32(np.dot(row_i, row_j) / (n_obs))
 
-
+# TODO: Fix this function.
 @njit(fastmath=True)
 def cov_na(row_i, row_j) -> float:
     """Compute the covariance between two 1D numpy arrays with nan elements.
