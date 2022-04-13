@@ -841,7 +841,7 @@ class StdGenoData(AbstractGenoData):
                 the LD matrix and variant information.
         """
         geno_array = np.ascontiguousarray(self.genotypes.to_numpy())
-        mat, rows_remove = make_cov(geno_array)
+        mat, _, rows_remove = make_cov(geno_array)
         rows_keep = list(set(range(self.n_snps)) - rows_remove)
         mat = mat[np.ix_(rows_keep, rows_keep)]
         varinfo = self.snps.iloc[rows_keep].reset_index(drop=False)
@@ -912,7 +912,7 @@ class StdGenoData(AbstractGenoData):
         else: # use all individuals
             gendata = self
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
-        grm, _ = make_cov(geno_array)
+        grm, non_missing, _ = make_cov(geno_array)
         return grm
 
 

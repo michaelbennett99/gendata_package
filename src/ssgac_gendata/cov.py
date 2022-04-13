@@ -37,7 +37,7 @@ def cov_na(row_i, row_j) -> float:
     mult = row_i * row_j
     multsum = np.nansum(mult)
     n_intersection = (~np.isnan(mult)).sum()
-    return multsum / (n_intersection - 1)
+    return multsum / (n_intersection), n_intersection
 
 
 @njit(fastmath=True)
@@ -195,6 +195,7 @@ def make_cov(
     
     Returns:
         np.ndarray: Covariance matrix in dense format.
+        np.ndarray: Number of observations used to calculate each covariance.
         set[int]: Set of rows to remove from the matrix to avoid singularity.
     """
     n_var, n_obs = mat.shape
@@ -204,14 +205,17 @@ def make_cov(
 
     # This is the required size of the output
     ldm = np.zeros((n_var, n_var), dtype=np.float32)
+    non_missing = np.zeros((n_var, n_var), dtype=np.uint32)
     rows_remove = set()
     for i in range(n_var):
         for j in range(i, n_var):
             if missing[i] or missing[j]:
-                val = cov_na(mat[i], mat[j])
+                val, nm = cov_na(mat[i], mat[j])
             else:
                 val = cov(mat[i], mat[j], n_obs)
+                nm = n_obs
             ldm[i, j] = val
+            non_missing[i, j] = nm
             if i != j:
                 lin_dep = (
                     (val == 1)
@@ -221,4 +225,5 @@ def make_cov(
                 if lin_dep: # If this is 1 we will have a rank deficient matrix
                     rows_remove.add(i)
                 ldm[j, i] = val
-    return ldm, rows_remove
+                non_missing[j, i] = nm
+    return ldm, non_missing, rows_remove
