@@ -9,7 +9,7 @@ import numpy as np
 from numba import njit
 
 @njit(fastmath=True)
-def cov(row_i: np.ndarray, row_j: np.ndarray, n_obs: int) -> np.float32:
+def cov(row_i: np.ndarray, row_j: np.ndarray, n_obs: int) -> float:
     """Compute the covariance between two 1D numpy arrays.
 
     Args:
@@ -21,6 +21,22 @@ def cov(row_i: np.ndarray, row_j: np.ndarray, n_obs: int) -> np.float32:
         float: Covariable between row_i and row_j.
     """
     return np.float32(np.dot(row_i, row_j) / (n_obs))
+
+@njit(fastmath=True)
+def weighted_cov(
+        row_i: np.ndarray, row_j: np.ndarray, weights: np.ndarray
+    ) -> float:
+    """Compute the weighted covariance between two 1D numpy arrays.
+
+    Args:
+        row_i (np.ndarray): Numpy array of length n_obs.
+        row_j (np.ndarray): Numpy array of length n_obs.
+        weights (np.ndarray): Numpy array of length n_obs.
+
+    Returns:
+        float: Weighted covariance between row_i and row_j.
+    """
+    return np.float32(np.dot(row_i, row_j * weights) / np.sum(weights))
 
 # TODO: Fix this function.
 @njit(fastmath=True)
@@ -182,7 +198,8 @@ def make_window_cov(
 
 @njit(fastmath=True)
 def make_cov(
-        mat: np.ndarray, missing: Optional[np.ndarray] = None
+        mat: np.ndarray,
+        missing: Optional[np.ndarray] = None
     ) -> tuple[np.ndarray, set[int]]:
     """Make a dense covariance matrix, allowing for missing data.
 
@@ -226,4 +243,54 @@ def make_cov(
                     rows_remove.add(i)
                 ldm[j, i] = val
                 non_missing[j, i] = nm
+    return ldm, non_missing, rows_remove
+
+
+@njit(fastmath=True)
+def make_weighted_cov(
+        mat: np.ndarray,
+        missing: Optional[np.ndarray] = None,
+        weights: Optional[np.ndarray] = None
+    ) -> tuple[np.ndarray, set[int]]:
+    """Make a dense covariance matrix, allowing for missing data.
+
+    Args:
+        mat (np.ndarray): MxN array to make covariance matrix for. Assumed
+            that variables are in rows and observations in columns.
+        missing (Optional[np.ndarray], optional): A length M vector recording
+            the missingness of each variable. Defaults to None, in which case
+            missingness will be calculated.
+    
+    Returns:
+        np.ndarray: Covariance matrix in dense format.
+        np.ndarray: Number of observations used to calculate each covariance.
+        set[int]: Set of rows to remove from the matrix to avoid singularity.
+    """
+    n_var, n_obs = mat.shape
+
+    if missing is None:
+        missing = np.sum(np.isnan(mat), axis=1) != 0
+    
+    if missing.any():
+        raise ValueError("Missing data not supported for weighted covariance.")
+
+    # This is the required size of the output
+    ldm = np.zeros((n_var, n_var), dtype=np.float32)
+    non_missing = np.zeros((n_var, n_var), dtype=np.uint32)
+    rows_remove = set()
+    for i in range(n_var):
+        for j in range(i, n_var):
+            val = weighted_cov(mat[i], mat[j], n_obs, weights)
+            ldm[i, j] = val
+            non_missing[i, j] = n_obs
+            if i != j:
+                lin_dep = (
+                    (val == 1)
+                    and (i not in rows_remove)
+                    and (j not in rows_remove)
+                )
+                if lin_dep: # If this is 1 we will have a rank deficient matrix
+                    rows_remove.add(i)
+                ldm[j, i] = val
+                non_missing[j, i] = n_obs
     return ldm, non_missing, rows_remove
