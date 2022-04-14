@@ -22,7 +22,7 @@ def process_args() -> argparse.Namespace:
         help="Path to plink fileset."
     )
     parser.add_argument(
-        "--extract", type=str, default=None, type=read_1col_text,
+        "--extract", type=read_1col_text, default=None,
         help="Path to text file containing list of SNPs to extract."
     )
     parser.add_argument(
