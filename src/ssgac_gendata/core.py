@@ -19,7 +19,7 @@ from pysnptools.snpreader import Bed, SnpData
 from typing import Any, Iterable, Optional, Union, Type
 
 from ssgac_gendata.constants import *
-from ssgac_gendata.cov import make_cov, make_spwindow_cov, make_window_cov
+from ssgac_gendata.cov import make_cov, make_weighted_cov, make_spwindow_cov, make_window_cov
 from ssgac_gendata.grm import GRM
 
 
@@ -900,7 +900,7 @@ class StdGenoData(AbstractGenoData):
     def _calculate_grm(
             self,
             individuals: Optional[list[str]] = None,
-            weights: Optional[dict[str, float]] = None
+            weights: Optional[pd.Series] = None
         ) -> tuple[np.ndarray, np.ndarray]:
         """Calculate a full GRM.
 
@@ -916,8 +916,14 @@ class StdGenoData(AbstractGenoData):
             gendata = self.filter(iid=individuals)
         else: # use all individuals
             gendata = self
+        if weights is None:
+            weights = np.ones(gendata.n_snps)
+        else:
+            weights = weights.loc[
+                gendata.snps.index
+            ].values.to_numpy().reshape(-1)
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
-        grm, non_missing, _ = make_cov(geno_array)
+        grm, non_missing, _ = make_weighted_cov(geno_array, weights)
         return grm, non_missing
     
     def calculate_grm(
