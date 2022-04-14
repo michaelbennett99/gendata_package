@@ -19,7 +19,7 @@ def process_args() -> argparse.Namespace:
         """
         Read weights from file.
         """
-        return read_csv(path, sep="\t", header=None, squeeze=True)
+        return read_csv(path, sep="\t", header=None, squeeze=True).abs()
 
     parser = argparse.ArgumentParser(
         description="Make a GRM from a BED file.",
@@ -38,7 +38,8 @@ def process_args() -> argparse.Namespace:
         help="Path to file containing weights for each SNP."
     )
     parser.add_argument(
-        "--out", type=str, required=True, help="Path to which to write GRM."
+        "--out", type=str, required=True,
+        help="Path to which to write GRM."
     )
     return parser.parse_args()
 
