@@ -20,6 +20,7 @@ from typing import Any, Iterable, Optional, Union, Type
 
 from ssgac_gendata.constants import *
 from ssgac_gendata.cov import make_cov, make_spwindow_cov, make_window_cov
+from ssgac_gendata.grm import GRM
 
 
 class AbstractGenoData:
@@ -896,7 +897,11 @@ class StdGenoData(AbstractGenoData):
         return ldm_dict
     
 
-    def _calculate_grm(self, individuals: Optional[list[str]] = None, weights: Optional[dict[str, float]] = None):
+    def _calculate_grm(
+            self,
+            individuals: Optional[list[str]] = None,
+            weights: Optional[dict[str, float]] = None
+        ) -> tuple[np.ndarray, np.ndarray]:
         """Calculate a full GRM.
 
         Args:
@@ -914,6 +919,25 @@ class StdGenoData(AbstractGenoData):
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
         grm, non_missing, _ = make_cov(geno_array)
         return grm, non_missing
+    
+    def calculate_grm(
+            self,
+            individuals: Optional[list[str]] = None,
+            weights: Optional[dict[str, float]] = None
+        ) -> GRM:
+        """Calculate a full GRM.
+
+        Args:
+            individuals (list[str]): List of individual IDs to include in the
+                GRM.
+            weights (dict[str, float]): Weights to apply to the GRM.
+
+        Returns:
+            GRM: The GRM.
+        """
+        grm, non_missing = self._calculate_grm(individuals, weights)
+        ids = self.samples.reset_index(drop=False).iloc[:, [0, 1]]
+        return GRM(grm, ids, non_missing)
 
 
 def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:

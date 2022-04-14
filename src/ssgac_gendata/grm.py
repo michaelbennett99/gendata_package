@@ -31,7 +31,7 @@ class GRM():
 
         Args:
             out_file (str): Path to write GRM to. Do not include final part of
-                suffix (i.e. .gz or .id).
+                suffix (i.e. .grm.gz or .grm.id).
         """
         ix_tril = np.tril_indices_from(self.grm)
         
@@ -42,8 +42,8 @@ class GRM():
             }
         )
         gz_df.to_csv(
-            f"{out_file}.gz",
+            f"{out_file}.grm.gz",
             sep="\t", index=False, header=False, compression="gzip"
         )
 
-        self.ids.to_csv(f"{out_file}.id", sep="\t", index=False, header=False)
+        self.ids.to_csv(f"{out_file}.grm.id", sep="\t", index=False, header=False)
