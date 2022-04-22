@@ -280,7 +280,7 @@ def make_weighted_cov(
     rows_remove = set()
     for i in range(n_var):
         for j in range(i, n_var):
-            val = weighted_cov(mat[i], mat[j], n_obs, weights)
+            val = weighted_cov(mat[i], mat[j], weights)
             ldm[i, j] = val
             non_missing[i, j] = n_obs
             if i != j:
