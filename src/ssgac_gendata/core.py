@@ -921,9 +921,9 @@ class StdGenoData(AbstractGenoData):
         else:
             weights = weights.loc[
                 gendata.snps.index
-            ].values.to_numpy().reshape(-1)
+            ].values.reshape(-1)
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
-        grm, non_missing, _ = make_weighted_cov(geno_array, weights)
+        grm, non_missing, _ = make_weighted_cov(geno_array, weights=weights)
         return grm, non_missing
     
     def calculate_grm(
