@@ -19,7 +19,7 @@ def process_args() -> argparse.Namespace:
         """
         Read weights from file.
         """
-        return read_csv(path, sep="\t", header=None, squeeze=True).abs()
+        return read_csv(path, sep="\t", index_col=0, header=None).squeeze().abs()
 
     parser = argparse.ArgumentParser(
         description="Make a GRM from a BED file.",
