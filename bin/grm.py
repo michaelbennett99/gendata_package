@@ -8,8 +8,8 @@ import argparse
 
 from pandas import read_csv, Series
 
-from ssgac_gendata.core import read_bed
-from ssgac_gendata.utils import read_1col_text
+from src.core import read_bed
+from src.utils import read_1col_text
 
 def process_args() -> argparse.Namespace:
     """
