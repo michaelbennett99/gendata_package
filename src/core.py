@@ -13,14 +13,15 @@ import scipy.sparse as sp
 
 from multiprocessing import Pool
 from numpy.random.bit_generator import BitGenerator
+from numpy.typing import NDArray
 from numba import vectorize
 from numba.core.types import float64, int64, int32, boolean
 from pysnptools.snpreader import Bed, SnpData
 from typing import Any, Iterable, Optional, Union, Type
 
-from gendata.constants import *
-from gendata.cov import make_cov, make_weighted_cov, make_spwindow_cov, make_window_cov
-from gendata.grm import GRM
+from .constants import *
+from .cov import make_cov, make_weighted_cov, make_spwindow_cov, make_window_cov
+from .grm import GRM
 
 
 class AbstractGenoData:
@@ -86,7 +87,7 @@ class AbstractGenoData:
         snps = snps.sort_values(self.SORT_KEYS)
 
         # Apply right order to genotype df
-        genotypes = genotypes.loc[snps.index, samples.index]
+        genotypes = genotypes.loc[snps.index, samples.index] # type: ignore
 
         # Set attributes
         self.genotypes = genotypes
@@ -144,7 +145,7 @@ class AbstractGenoData:
         Returns:
             Type[self]: A new genetic data object of the same type.
         """
-        genotypes = self.genotypes.filter(rsid_list, axis=self.SNP_AXIS)
+        genotypes = self.genotypes.filter(rsid_list, axis=self.SNP_AXIS) # type: ignore
         snps = self.snps.loc[rsid_list, :]
         return type(self)(genotypes, snps, self.samples)
 
@@ -154,7 +155,7 @@ class AbstractGenoData:
         Returns:
             Type[self]: A new genetic data object of the same type.
         """
-        genotypes = self.genotypes.filter(iid_list, axis=self.SAMPLES_AXIS)
+        genotypes = self.genotypes.filter(iid_list, axis=self.SAMPLES_AXIS) # type: ignore
         samples = self.samples.loc[iid_list, :]
         return type(self)(genotypes, self.snps, samples)
 
@@ -384,9 +385,9 @@ class AbstractGenoData:
         rng = np.random.default_rng(seed).bit_generator
         geno_data = self
         if rsid is not None:
-            geno_data = geno_data._filter_rsid(rsid, rng)
+            geno_data = geno_data._sample_rsid(rsid, rng)
         if iid is not None:
-            geno_data = geno_data._filter_iid(iid, rng)
+            geno_data = geno_data._sample_iid(iid, rng)
         return geno_data
 
     def flip_snps(self, *rsids: str):
@@ -609,10 +610,8 @@ class IntGenoData(AbstractGenoData):
         fullsum = halfsum + np.sum(p_array[p_array > target])
 
         if midp:
-            p = min(1, (halfsum - (target/2))/ fullsum)
-        else:
-            p = min(1, halfsum / fullsum)
-        return p
+            return np.minimum(1.0, (halfsum - (target/2)) / fullsum)
+        return np.minimum(1.0, halfsum / fullsum)
 
     def hwe(self, midp: bool) -> pd.Series:
         """Calculate the exact HWE p-values for each SNP.
@@ -628,7 +627,7 @@ class IntGenoData(AbstractGenoData):
         n_homr = np.minimum(hom1, hom2)
         n_rare = het + (2 * n_homr)
 
-        p_val = self._hwe_test(het, n_rare, n_genotypes, midp)
+        p_val = self._hwe_test(het, n_rare, n_genotypes, midp) # type: ignore
         return pd.Series(p_val, index=self.rsids)
 
     def _filter_hwe(self, hwe_threshold: float):
@@ -737,7 +736,7 @@ class StdGenoData(AbstractGenoData):
         Returns:
             Type[StdGenoData]: StdGenoData object.
         """
-        rsids = list(rsids)
+        rsids = list(rsids) # type: ignore
         # Flip genotypes
         genotypes = self.genotypes
         trans_constant = (
@@ -792,7 +791,7 @@ class StdGenoData(AbstractGenoData):
             mat = make_window_cov(geno_array, bpos, window, missing)
             varinfo = geno_data.snps.reset_index(drop=False)
         print(f"Chromosome {chrom} finished.")
-        return {LDM: mat, VARINFO: varinfo}
+        return {LDM: mat, VARINFO: varinfo} # type: ignore
 
     def calculate_ldm_window(
             self,
@@ -829,7 +828,7 @@ class StdGenoData(AbstractGenoData):
             res = p.starmap(self._calculate_ldm_window, args_list)
         spmatrix_dict = dict(zip(chromosomes, res))
 
-        return spmatrix_dict
+        return spmatrix_dict # type: ignore
 
     def _calculate_ldm(self) -> dict[str, Union[np.ndarray, pd.DataFrame]]:
         """Calculate a full LD matrix.
@@ -863,7 +862,7 @@ class StdGenoData(AbstractGenoData):
             dict[str, Union[np.ndarray, pd.DataFrame]]: A dictionary containing
                 the LD matrix and variant information.
         """
-        return block._calculate_ldm()
+        return block._calculate_ldm() # type: ignore
 
     def calculate_ldm_blocks(
             self,
@@ -892,7 +891,7 @@ class StdGenoData(AbstractGenoData):
         print("Starting subprocesses.")
 
         with Pool(n_cores) as p:
-            res = p.map(self._calculate_ldm_static, args_list)
+            res = p.map(self._calculate_ldm_static, args_list) # type: ignore
         ldm_dict = dict(zip(blocks_list, res))
         return ldm_dict
 
@@ -917,13 +916,13 @@ class StdGenoData(AbstractGenoData):
         else: # use all individuals
             gendata = self
         if weights is None:
-            weights = np.ones(gendata.n_snps)
+            weights = np.ones(gendata.n_snps) # type: ignore
         else:
             weights = weights.loc[
                 gendata.snps.index
-            ].values.reshape(-1)
+            ].values.reshape(-1) # type: ignore
         geno_array = np.ascontiguousarray(gendata.genotypes.to_numpy().T)
-        grm, non_missing, _ = make_weighted_cov(geno_array, weights=weights)
+        grm, non_missing, _ = make_weighted_cov(geno_array, weights=weights) # type: ignore
         return grm, non_missing
 
     def calculate_grm(
@@ -941,7 +940,7 @@ class StdGenoData(AbstractGenoData):
         Returns:
             GRM: The GRM.
         """
-        grm, non_missing = self._calculate_grm(individuals, weights)
+        grm, non_missing = self._calculate_grm(individuals, weights) # type: ignore
         ids = self.samples.reset_index(drop=False).iloc[:, [0, 1]]
         return GRM(grm, ids, non_missing)
 
@@ -970,7 +969,7 @@ def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:
     genodata_type = type(genotype_data[0])
 
     # Merge snps
-    geno_snps = [genodata_obj.snps for genodata_obj in genotype_data]
+    geno_snps = [genodata_obj.snps for genodata_obj in genotype_data] # type: ignore
     try:
         snps = pd.concat(geno_snps, verify_integrity=True)
     except ValueError as err:
@@ -979,7 +978,7 @@ def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:
 
     # Merge samples
     geno_iids = set(
-        frozenset(genodata_obj.iids) for genodata_obj in genotype_data)
+        frozenset(genodata_obj.iids) for genodata_obj in genotype_data) # type: ignore
     if len(geno_iids) != 1:
         iid_lens = [len(iid_i) for iid_i in geno_iids]
         mssg = (
@@ -987,13 +986,13 @@ def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:
             f"Distinct sample counts: {iid_lens}."
         )
         raise ValueError(mssg)
-    samples = genotype_data[0].samples
+    samples = genotype_data[0].samples # type: ignore
 
     # Merge geno
-    geno_geno = [genodata_obj.genotypes for genodata_obj in genotype_data]
+    geno_geno = [genodata_obj.genotypes for genodata_obj in genotype_data] # type: ignore
     genotypes = pd.concat(geno_geno)
 
-    return genodata_type(genotypes, snps, samples)
+    return genodata_type(genotypes, snps, samples) # type: ignore
 
 
 def elementwise_isin(
@@ -1054,14 +1053,14 @@ def _read_bed(
 
     # Read genotype data
     geno_data = bed_file[sample_indices, snp_indices].read(
-        dtype="int8", num_threads=num_threads, _require_float32_64=False).val.T
+        dtype="int8", num_threads=num_threads, _require_float32_64=False).val.T # type: ignore
     geno_data_df = pd.DataFrame(geno_data, index=snp_vals, columns=sample_vals)
     geno_data_df[geno_data_df == PYSNPTOOLS_MISSING_VAL] = pd.NA
 
     # Read variant information
     snp_data = pd.read_csv(
         f"{path}.bim", delim_whitespace=True,
-        usecols=BIM_COLS.keys(), header=None
+        usecols=BIM_COLS.keys(), header=None # type: ignore
     )
     snp_data = snp_data.rename(
         columns=BIM_COLS).set_index(RSID).loc[snp_vals]
@@ -1069,7 +1068,7 @@ def _read_bed(
     # Read sample infomration
     sample_data = pd.read_csv(
         f"{path}.fam", delim_whitespace=True,
-        usecols=FAM_COLS.keys(), header=None,
+        usecols=FAM_COLS.keys(), header=None, # type: ignore
         dtype={ix: str for ix, col in FAM_COLS.items() if ID in col}
     )
     sample_data = sample_data.rename(
@@ -1108,7 +1107,7 @@ def read_bed(
         _read_bed(path, rsids, individuals, num_threads) for path in paths
     ]
     if len(geno_data_list) > 1:
-        geno_data = merge(*geno_data_list)
+        geno_data = merge(*geno_data_list) # type: ignore
     else:
         geno_data = geno_data_list[0]
-    return geno_data
+    return geno_data # type: ignore
