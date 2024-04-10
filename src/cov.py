@@ -9,7 +9,7 @@ import numpy as np
 from numba import njit
 
 @njit(fastmath=True)
-def cov(row_i: np.ndarray, row_j: np.ndarray, n_obs: int) -> float:
+def cov(row_i: np.ndarray, row_j: np.ndarray) -> float:
     """Compute the covariance between two 1D numpy arrays.
 
     Args:
@@ -18,9 +18,10 @@ def cov(row_i: np.ndarray, row_j: np.ndarray, n_obs: int) -> float:
         n_obs (int): Number of observations for each array.
 
     Returns:
-        float: Covariable between row_i and row_j.
+        float: Covariance between row_i and row_j.
     """
-    return np.float32(np.dot(row_i, row_j) / (n_obs))
+
+    return np.dot(row_i, row_j) / row_i.shape[0]
 
 @njit(fastmath=True)
 def weighted_cov(
@@ -36,11 +37,11 @@ def weighted_cov(
     Returns:
         float: Weighted covariance between row_i and row_j.
     """
-    return np.float32(np.dot(row_i, row_j * weights) / np.sum(weights))
+    return np.dot(row_i, row_j * weights) / np.sum(weights)
 
-# TODO: Fix this function.
+
 @njit(fastmath=True)
-def cov_na(row_i, row_j) -> float:
+def cov_na(row_i: np.ndarray, row_j: np.ndarray) -> tuple[float, int]:
     """Compute the covariance between two 1D numpy arrays with nan elements.
 
     Args:
@@ -53,7 +54,7 @@ def cov_na(row_i, row_j) -> float:
     mult = row_i * row_j
     multsum = np.nansum(mult)
     n_intersection = (~np.isnan(mult)).sum()
-    return multsum / (n_intersection), n_intersection
+    return multsum / n_intersection, n_intersection
 
 
 @njit(fastmath=True)
@@ -63,7 +64,7 @@ def make_spwindow_cov(
         window: Union[int, float],
         missing: Optional[np.ndarray] = None,
         tol: float = 0.001
-    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, list]:
     """Makes a sparse covariance matrix, where all elements for which
     distance < window are set to zero.
 
@@ -78,8 +79,8 @@ def make_spwindow_cov(
             variables if the distance between them is less than this.
 
     Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray]: Covariance matrix in sparse
-            ijv format.
+        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: Covariance matrix
+            in sparse ijv format.
     """
     n_var, n_obs = mat.shape
 
@@ -94,7 +95,7 @@ def make_spwindow_cov(
     ldm_i = np.empty(max_len, dtype=np.uint32)
     ldm_j = np.empty(max_len, dtype=np.uint32)
     ldm_val = np.empty(max_len, dtype=np.float32)
-    
+
     counter = 0
     for i in range(n_var):
         i_counter = counter
@@ -106,7 +107,7 @@ def make_spwindow_cov(
         i_ldm_val = np.empty(i_len, dtype=np.float32)
         for j in range(i, n_var):
             valid = np.abs(position[i] - position[j]) < window
-            
+
             if not valid: # then no variables further away will be valid
                 # Add this row to the matrix
                 ldm_i[i_counter: counter] = i_ldm_i[0:j_counter]
@@ -114,14 +115,14 @@ def make_spwindow_cov(
                 ldm_val[i_counter: counter] = i_ldm_val[0:j_counter]
                 # Then break
                 break
-            
+
             else: # calculate covariances
-                
+
                 if missing[i] or missing[j]:
-                    val = cov_na(mat[i], mat[j])
+                    val, _ = cov_na(mat[i], mat[j])
                 else:
-                    val = cov(mat[i], mat[j], n_obs)
-                
+                    val = cov(mat[i], mat[j])
+
                 if i == j:
                     i_ldm_i[j_counter] = i
                     i_ldm_j[j_counter] = j
@@ -135,7 +136,7 @@ def make_spwindow_cov(
                         break
                     if abs(val) < tol:
                         val = 0
-                    
+
                     i_ldm_i[j_counter] = j
                     i_ldm_j[j_counter] = i
                     i_ldm_val[j_counter] = val
@@ -188,9 +189,9 @@ def make_window_cov(
                 break
             else: # calculate covariances
                 if missing[i] or missing[j]:
-                    val = cov_na(mat[i], mat[j])
+                    val, _ = cov_na(mat[i], mat[j])
                 else:
-                    val = cov(mat[i], mat[j], n_obs)
+                    val = cov(mat[i], mat[j])
                 ldm[i, j] = val
                 if i != j:
                     ldm[j, i] = val
@@ -200,7 +201,7 @@ def make_window_cov(
 def make_cov(
         mat: np.ndarray,
         missing: Optional[np.ndarray] = None
-    ) -> tuple[np.ndarray, set[int]]:
+    ) -> tuple[np.ndarray, np.ndarray, set[int]]:
     """Make a dense covariance matrix, allowing for missing data.
 
     Args:
@@ -209,7 +210,7 @@ def make_cov(
         missing (Optional[np.ndarray], optional): A length M vector recording
             the missingness of each variable. Defaults to None, in which case
             missingness will be calculated.
-    
+
     Returns:
         np.ndarray: Covariance matrix in dense format.
         np.ndarray: Number of observations used to calculate each covariance.
@@ -229,7 +230,7 @@ def make_cov(
             if missing[i] or missing[j]:
                 val, nm = cov_na(mat[i], mat[j])
             else:
-                val = cov(mat[i], mat[j], n_obs)
+                val = cov(mat[i], mat[j])
                 nm = n_obs
             ldm[i, j] = val
             non_missing[i, j] = nm
@@ -249,18 +250,19 @@ def make_cov(
 @njit(fastmath=True)
 def make_weighted_cov(
         mat: np.ndarray,
-        missing: Optional[np.ndarray] = None,
-        weights: Optional[np.ndarray] = None
-    ) -> tuple[np.ndarray, set[int]]:
+        weights: np.ndarray,
+        missing: Optional[np.ndarray] = None
+    ) -> tuple[np.ndarray, np.ndarray, set[int]]:
     """Make a dense covariance matrix, allowing for missing data.
 
     Args:
         mat (np.ndarray): MxN array to make covariance matrix for. Assumed
             that variables are in rows and observations in columns.
+        weights (np.ndarray): A length N vector of weights for each observation.
         missing (Optional[np.ndarray], optional): A length M vector recording
             the missingness of each variable. Defaults to None, in which case
             missingness will be calculated.
-    
+
     Returns:
         np.ndarray: Covariance matrix in dense format.
         np.ndarray: Number of observations used to calculate each covariance.
@@ -270,7 +272,7 @@ def make_weighted_cov(
 
     if missing is None:
         missing = np.sum(np.isnan(mat), axis=1) != 0
-    
+
     if missing.any():
         raise ValueError("Missing data not supported for weighted covariance.")
 
