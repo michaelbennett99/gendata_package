@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API &mdash; gendata 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gendata.core" href="generated/gendata.core.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            gendata
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-gendata">gendata</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gendata.IntGenoData"><code class="docutils literal notranslate"><span class="pre">IntGenoData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.af"><code class="docutils literal notranslate"><span class="pre">IntGenoData.af</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.flip_snps"><code class="docutils literal notranslate"><span class="pre">IntGenoData.flip_snps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.hwe"><code class="docutils literal notranslate"><span class="pre">IntGenoData.hwe()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.maf"><code class="docutils literal notranslate"><span class="pre">IntGenoData.maf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.min_maf"><code class="docutils literal notranslate"><span class="pre">IntGenoData.min_maf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.n_het"><code class="docutils literal notranslate"><span class="pre">IntGenoData.n_het</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.n_hom1"><code class="docutils literal notranslate"><span class="pre">IntGenoData.n_hom1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.n_hom2"><code class="docutils literal notranslate"><span class="pre">IntGenoData.n_hom2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.save"><code class="docutils literal notranslate"><span class="pre">IntGenoData.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.standardised"><code class="docutils literal notranslate"><span class="pre">IntGenoData.standardised()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.standardized"><code class="docutils literal notranslate"><span class="pre">IntGenoData.standardized()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.IntGenoData.to_maf"><code class="docutils literal notranslate"><span class="pre">IntGenoData.to_maf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gendata.StdGenoData"><code class="docutils literal notranslate"><span class="pre">StdGenoData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.StdGenoData.calculate_grm"><code class="docutils literal notranslate"><span class="pre">StdGenoData.calculate_grm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.StdGenoData.calculate_ldm_blocks"><code class="docutils literal notranslate"><span class="pre">StdGenoData.calculate_ldm_blocks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.StdGenoData.calculate_ldm_window"><code class="docutils literal notranslate"><span class="pre">StdGenoData.calculate_ldm_window()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gendata.StdGenoData.flip_snps"><code class="docutils literal notranslate"><span class="pre">StdGenoData.flip_snps()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gendata.merge"><code class="docutils literal notranslate"><span class="pre">merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gendata.read_bed"><code class="docutils literal notranslate"><span class="pre">read_bed()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#core">core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/gendata.core.html">gendata.core</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cov">cov</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/gendata.cov.html">gendata.cov</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#grm">grm</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/gendata.grm.html">gendata.grm</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#utils">utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/gendata.utils.html">gendata.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gendata</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api">
+<h1>API<a class="headerlink" href="#api" title="Link to this heading"></a></h1>
+<section id="module-gendata">
+<span id="gendata"></span><h2>gendata<a class="headerlink" href="#module-gendata" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gendata.IntGenoData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gendata.</span></span><span class="sig-name descname"><span class="pre">IntGenoData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genotypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gendata.IntGenoData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGenoData</span></code></p>
+<p>A class to hold and perform basic operations on integer genotype data.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="gendata.IntGenoData.af">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">af</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Series</span></em><a class="headerlink" href="#gendata.IntGenoData.af" title="Link to this definition"></a></dt>
+<dd><p>Calculate the allele frequency of each SNP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A series of allele frequencies indexed by rsID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.IntGenoData.flip_snps">
+<span class="sig-name descname"><span class="pre">flip_snps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">rsids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gendata.IntGenoData.flip_snps" title="Link to this definition"></a></dt>
+<dd><p>Flip A1 and A2 for the selected SNPs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rsids</strong> (<em>str</em>) – List of rsids to flip.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>GenoData object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Type[<a class="reference internal" href="#gendata.IntGenoData" title="gendata.IntGenoData">IntGenoData</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.IntGenoData.hwe">
+<span class="sig-name descname"><span class="pre">hwe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">midp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Series</span></span></span><a class="headerlink" href="#gendata.IntGenoData.hwe" title="Link to this definition"></a></dt>
+<dd><p>Calculate the exact HWE p-values for each SNP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>midp</strong> (<em>bool</em>) – Apply midp adjustment.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A series of HWE p-values indexed by rsID.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gendata.IntGenoData.maf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Series</span></em><a class="headerlink" href="#gendata.IntGenoData.maf" title="Link to this definition"></a></dt>
+<dd><p>Calculate the minor allele frequency for each SNP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A series of minor allele frequencies indexed by rsID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gendata.IntGenoData.min_maf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min_maf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#gendata.IntGenoData.min_maf" title="Link to this definition"></a></dt>
+<dd><p>Find the minimim minor allele frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The minimum minor allele frequency.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gendata.IntGenoData.n_het">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_het</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Series</span></em><a class="headerlink" href="#gendata.IntGenoData.n_het" title="Link to this definition"></a></dt>
+<dd><p>Number of samples heterozygous.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Count of heterozygous samples by rsID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gendata.IntGenoData.n_hom1">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_hom1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Series</span></em><a class="headerlink" href="#gendata.IntGenoData.n_hom1" title="Link to this definition"></a></dt>
+<dd><p>Number of samples homozygous in the reference allele.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Count of homozygous (A1) samples by rsID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gendata.IntGenoData.n_hom2">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_hom2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Series</span></em><a class="headerlink" href="#gendata.IntGenoData.n_hom2" title="Link to this definition"></a></dt>
+<dd><p>Number of samples homozygous in the alternate allele.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Count of homozygous (A2) samples by rsID.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.IntGenoData.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gendata.IntGenoData.save" title="Link to this definition"></a></dt>
+<dd><p>Save the integer genotype data to a .bed/.bim/.fam fileset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>out</strong> (<em>str</em>) – The path to save the data to. The path should not include
+the file extension, which will be added automatically.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.IntGenoData.standardised">
+<span class="sig-name descname"><span class="pre">standardised</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gendata.IntGenoData.standardised" title="Link to this definition"></a></dt>
+<dd><p>Standardise genotypes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A standardised genotype data object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Type[<a class="reference internal" href="#gendata.StdGenoData" title="gendata.StdGenoData">StdGenoData</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.IntGenoData.standardized">
+<span class="sig-name descname"><span class="pre">standardized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gendata.IntGenoData.standardized" title="Link to this definition"></a></dt>
+<dd><p>Standardise genotypes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A standardised genotype data object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Type[<a class="reference internal" href="#gendata.StdGenoData" title="gendata.StdGenoData">StdGenoData</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.IntGenoData.to_maf">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_maf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">af</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#gendata.IntGenoData.to_maf" title="Link to this definition"></a></dt>
+<dd><p>Convert a biallelic allele frequency to a minor allele frequency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>af</strong> (<em>float</em>) – Allele frequency.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If af is not in [0, 1].</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Minor allele frequency.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gendata.StdGenoData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gendata.</span></span><span class="sig-name descname"><span class="pre">StdGenoData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genotypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gendata.StdGenoData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGenoData</span></code></p>
+<p>A class to hold and perform operations on standardised genotype data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.StdGenoData.calculate_grm">
+<span class="sig-name descname"><span class="pre">calculate_grm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">individuals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GRM</span></span></span><a class="headerlink" href="#gendata.StdGenoData.calculate_grm" title="Link to this definition"></a></dt>
+<dd><p>Calculate a full GRM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>individuals</strong> (<em>Optional</em><em>[</em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – List of individual IDs to include in the GRM.</p></li>
+<li><p><strong>weights</strong> (<em>Optional</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em><em>]</em>) – Weights to apply to the GRM.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The GRM.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GRM</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.StdGenoData.calculate_ldm_blocks">
+<span class="sig-name descname"><span class="pre">calculate_ldm_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gendata.StdGenoData.calculate_ldm_blocks" title="Link to this definition"></a></dt>
+<dd><p>Calculate a block-wise LD matrix, where the each block ends at one
+of the listed terminal rsids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block_map</strong> (<em>Union</em><em>[</em><em>pd.Series</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>]</em>) – Mapping of rsids to block numbers.</p></li>
+<li><p><strong>n_cores</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of cores to use for parallelisation. If None,
+defaults to the number of cores available.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing an LD matrix dictionary for each block.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[int, dict[str, Union[np.ndarray, pd.DataFrame]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.StdGenoData.calculate_ldm_window">
+<span class="sig-name descname"><span class="pre">calculate_ldm_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">csr_matrix</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gendata.StdGenoData.calculate_ldm_window" title="Link to this definition"></a></dt>
+<dd><p>Calculate a sparse windowed LD matrix in CSR format.</p>
+<p>Note: These calculations are quite fast, so parallelisation may not
+always be necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>window</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Set LD correlations to zero for all values separated by
+a distance of greater than window. If None, the window will be set
+to the maximum distance between SNPs.</p></li>
+<li><p><strong>n_cores</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of cores to use for parallelisation. If None,
+defaults to the number of cores available.</p></li>
+<li><p><strong>sparse</strong> (<em>bool</em>) – Whether to make sparse matrices.</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – Tolerance for sparse matrix construction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing a sparse LD matrix for each chromosome.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[int, sp.csr_matrix]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gendata.StdGenoData.flip_snps">
+<span class="sig-name descname"><span class="pre">flip_snps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">rsids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gendata.StdGenoData.flip_snps" title="Link to this definition"></a></dt>
+<dd><p>Flip A1 and A2 for the selected SNPs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rsids</strong> (<em>str</em>) – List of rsids to flip.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>StdGenoData object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Type[<a class="reference internal" href="#gendata.StdGenoData" title="gendata.StdGenoData">StdGenoData</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gendata.merge">
+<span class="sig-prename descclassname"><span class="pre">gendata.</span></span><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">genotype_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">AbstractGenoData</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">AbstractGenoData</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#gendata.merge" title="Link to this definition"></a></dt>
+<dd><p>Merge sets of genotype data for different chromosomes/loci from the same
+set of samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>genotype_data</strong> (<em>AbstractGenoData</em>) – Genetic data objects to merge.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If genetic data inputs are not all of the same object
+type.</p></li>
+<li><p><strong>ValueError</strong> – The set of SNPs overlaps across genetic data inputs.</p></li>
+<li><p><strong>ValueError</strong> – The set of samples is not the same across all genetic
+data</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Merged genetic data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gendata.read_bed">
+<span class="sig-prename descclassname"><span class="pre">gendata.</span></span><span class="sig-name descname"><span class="pre">read_bed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rsids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individuals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#gendata.IntGenoData" title="gendata.core.IntGenoData"><span class="pre">IntGenoData</span></a></span></span><a class="headerlink" href="#gendata.read_bed" title="Link to this definition"></a></dt>
+<dd><p>Read raw genotypes into an annotated data frame.</p>
+<p>Can take a direct path to a .bed/.bim/.fam file or a list of paths to
+a set of .bed/.bim/.fam files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>paths</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Paths to files containing paths to .bed/.bim/.fam filesets
+to load together. Can be a single path or a list of paths. If a multiple
+paths are given, the data will be merged after loading.</p></li>
+<li><p><strong>rsids</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em><em>, </em><em>optional</em>) – Filter SNPs to this set of rsIDs. If not provided, no
+filtering will occur.</p></li>
+<li><p><strong>individuals</strong> (<em>Optional</em><em>[</em><em>list</em><em>]</em><em>, </em><em>optional</em>) – Filters samples to this list of individuals. If not
+provided, no filtering will occur.</p></li>
+<li><p><strong>num_threads</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Specifies the number of threads to use when reading bed
+files. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Annotated genotype data object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#gendata.IntGenoData" title="gendata.IntGenoData">IntGenoData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="core">
+<h2>core<a class="headerlink" href="#core" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/gendata.core.html#module-gendata.core" title="gendata.core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gendata.core</span></code></a></p></td>
+<td><p>A module containing functions and classes to facilitate the importing of genetic data.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cov">
+<h2>cov<a class="headerlink" href="#cov" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/gendata.cov.html#module-gendata.cov" title="gendata.cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gendata.cov</span></code></a></p></td>
+<td><p>Module containing functions for calculating covariances and covariance matrices.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="grm">
+<h2>grm<a class="headerlink" href="#grm" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/gendata.grm.html#module-gendata.grm" title="gendata.grm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gendata.grm</span></code></a></p></td>
+<td><p>Module to hold classes and functions related to genetic relationship matrices.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="utils">
+<h2>utils<a class="headerlink" href="#utils" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/gendata.utils.html#module-gendata.utils" title="gendata.utils"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gendata.utils</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/gendata.core.html" class="btn btn-neutral float-right" title="gendata.core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Michael Bennett.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
