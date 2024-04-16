@@ -949,14 +949,14 @@ def merge(*genotype_data: Type[AbstractGenoData]) -> Type[AbstractGenoData]:
     """Merge sets of genotype data for different chromosomes/loci from the same
     set of samples.
 
-    Raises:
-        TypeError: If genetic data inputs are not all of the same object type.
-        ValueError: The set of SNPs overlaps across genetic data inputs.
-        ValueError: The set of samples is not the same across all genetic data
-            inputs.
-
-    Returns:
-        Type[AbstractGenoData]: Merged genetic data.
+    :param genotype_data: Genetic data objects to merge.
+    :type genotype_data: AbstractGenoData
+    :raises TypeError: If genetic data inputs are not all of the same object
+        type.
+    :raises ValueError: The set of SNPs overlaps across genetic data inputs.
+    :raises ValueError: The set of samples is not the same across all genetic
+        data
+    :return: Merged genetic data.
     """
     # Checks
     distinct_types = set(type(genodata_obj) for genodata_obj in genotype_data)
@@ -1087,19 +1087,25 @@ def read_bed(
     Can take a direct path to a .bed/.bim/.fam file or a list of paths to
     a set of .bed/.bim/.fam files.
 
-    Args:
-        paths (Union[str, list[str]]): Paths to files containing paths to
-            .bed/.bim/.fam filesets to load together.
-        rsids (Optional[list], optional): Filter SNPs to this set of rsIDs.
-            Defaults to None, in which case no filtering will occur.
-        individuals (Optional[list], optional): Filters samples to this list of
-            individuals. Defaults to None, in which case no filtering will
-            occur.
-        num_threads (Optional[int], optional): Specifies the number of threads
-            to use when reading bed files.
+    :param paths: Paths to files containing paths to .bed/.bim/.fam filesets
+        to load together. Can be a single path or a list of paths. If a multiple
+        paths are given, the data will be merged after loading.
+    :type paths: Union[str, list[str]]
 
-    Returns:
-        Type[AbstractGenoData]: Annotated genotype data object.
+    :param rsids: Filter SNPs to this set of rsIDs. If not provided, no
+        filtering will occur.
+    :type rsids: Optional[list], optional
+
+    :param individuals: Filters samples to this list of individuals. If not
+        provided, no filtering will occur.
+    :type individuals: Optional[list], optional
+
+    :param num_threads: Specifies the number of threads to use when reading bed
+        files. Defaults to 1.
+    :type num_threads: Optional[int], optional
+
+    :return: Annotated genotype data object.
+    :rtype: IntGenoData
     """
     if isinstance(paths, str):
         paths = [paths]
