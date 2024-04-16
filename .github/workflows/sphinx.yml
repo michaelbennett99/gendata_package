@@ -18,10 +18,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install .
     - name: Build HTML
-      uses: ammaraskar/sphinx-action@master
-      with:
-        docs-folder: "/docs"
-        build-command: "sphinx-build -M html docs/source/ docs/build/"
+      run:
+        "sphinx-build -M html docs/source/ docs/build/"
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
