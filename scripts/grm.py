@@ -1,5 +1,4 @@
 #/usr/bin/env python3
-
 """
 A command line script to make a GRM in python.
 """
@@ -8,8 +7,8 @@ import argparse
 
 from pandas import read_csv, Series
 
-from src.core import read_bed
-from src.utils import read_1col_text
+from gendata.core import read_bed
+from gendata.utils import read_1col_text
 
 def process_args() -> argparse.Namespace:
     """
@@ -18,8 +17,15 @@ def process_args() -> argparse.Namespace:
     def read_weights(path: str) -> Series:
         """
         Read weights from file.
+
+        :param path: Path to file containing weights.
+        :type path: str
+
+        :return: Series of weights.
+        :rtype: Series
         """
-        return read_csv(path, sep="\t", index_col=0, header=None).squeeze().abs()
+        return read_csv(
+            path, sep="\t", index_col=0, header=None).squeeze().abs()
 
     parser = argparse.ArgumentParser(
         description="Make a GRM from a BED file.",

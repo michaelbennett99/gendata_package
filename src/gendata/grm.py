@@ -12,13 +12,22 @@ class GRM():
         self.grm = grm_matrix
         self.ids = ids
         self.n_snps = n_snps
-    
+
     def write_bin(self, out_file: str):
         """
         Write GRM in GCTA .bin format.
+
+        :param out_file: Path to write GRM to. Do not include final part of
+            suffix (i.e. .grm.gz or .grm.id).
+
+        :return: None
+
+        :raises NotImplementedError: Writing GRM in .bin format not yet supported.
         """
-        pass
-    
+        raise NotImplementedError(
+            "Writing GRM in .bin format not yet supported."
+        )
+
     def write_gz(self, out_file: str):
         """
         Write GRM in GCTA .gz format.
@@ -29,12 +38,14 @@ class GRM():
 
         x.grm.id has no header line; columns are family ID and individual ID.
 
-        Args:
-            out_file (str): Path to write GRM to. Do not include final part of
-                suffix (i.e. .grm.gz or .grm.id).
+        :param out_file: Path to write GRM to. Do not include final part of
+            suffix (i.e. .grm.gz or .grm.id).
+        :type out_file: str
+
+        :return: None
         """
         ix_tril = np.tril_indices_from(self.grm)
-        
+
         gz_df = pd.DataFrame(
             data={
                 "i": ix_tril[0] + 1, "j": ix_tril[1] + 1,

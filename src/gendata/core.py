@@ -46,18 +46,21 @@ class AbstractGenoData:
         ):
         """Initialises an AbstractGenoData object.
 
-        Args:
-            genotypes (pd.DataFrame): Matrix of genotypes, indexed by rsID on
-                the rows and IID on the columns.
-            snps (pd.DataFrame): Table of SNP information for the genotype
-                matrix indexed by rsID.
-            samples (pd.DataFrame): Table of sample information for the genotype
-                matrix indexed by IID.
+        :param genotypes: Matrix of genotypes, indexed by rsID on the rows and
+            IID on the columns.
+        :type genotypes: pd.DataFrame
 
-        Raises:
-            ValueError: Shapes of provided inputs do not align.
-            ValueError: rsIDs do not match between genotypes and SNPs.
-            ValueError: IIDs do not match between genotypes and samples.
+        :param snps: Table of SNP information for the genotype matrix indexed
+            by rsID.
+        :type snps: pd.DataFrame
+
+        :param samples: Table of sample information for the genotype matrix
+            indexed by IID.
+        :type samples: pd.DataFrame
+
+        :raises ValueError: Shapes of provided inputs do not align.
+        :raises ValueError: rsIDs do not match between genotypes and SNPs.
+        :raises ValueError: IIDs do not match between genotypes and samples.
         """
         ## Check shape.
         if genotypes.shape != (len(snps), len(samples)):
@@ -98,8 +101,8 @@ class AbstractGenoData:
     def n_snps(self) -> int:
         """Return the number of snps.
 
-        Returns:
-            int: Number of snps.
+        :return: The number of snps.
+        :rtype: int
         """
         return self.genotypes.shape[self.SNP_AXIS]
 
@@ -107,8 +110,8 @@ class AbstractGenoData:
     def n_samples(self) -> int:
         """Return the number of samples.
 
-        Returns:
-            int: The number of samples.
+        :return: The number of samples.
+        :rtype: int
         """
         return self.genotypes.shape[self.SAMPLES_AXIS]
 
@@ -116,8 +119,8 @@ class AbstractGenoData:
     def rsids(self) -> pd.Index:
         """Return an index of rsids ordered by chromosome and base position.
 
-        Returns:
-            pd.Index: Ordered list of all rsids.
+        :return: List of all rsids.
+        :rtype: pd.Index
         """
         return self.genotypes.index
 
@@ -125,8 +128,8 @@ class AbstractGenoData:
     def iids(self) -> pd.Index:
         """Return an index of IIDs. Order is arbitrary.
 
-        Returns:
-            pd.Index: List of all iids.
+        :return: List of all IIDs.
+        :rtype: pd.Index
         """
         return self.genotypes.columns
 
@@ -134,16 +137,19 @@ class AbstractGenoData:
     def shape(self) -> tuple[int, int]:
         """Return the shape of the genotype data.
 
-        Returns:
-            tuple[int, int]: Shape of the genotype data (n_snps, n_samples).
+        :return: The shape of the genotype data.
+        :rtype: tuple[int, int]
         """
         return self.genotypes.shape
 
     def _filter_base_snps(self, *rsid_list: str):
         """A base function to filter genotype data by a list of SNPs (indexes).
 
-        Returns:
-            Type[self]: A new genetic data object of the same type.
+        :param rsid_list: List of rsids to keep.
+        :type rsid_list: str
+
+        :return: A new genetic data object of the same type.
+        :rtype: Type[self]
         """
         genotypes = self.genotypes.filter(rsid_list, axis=self.SNP_AXIS) # type: ignore
         snps = self.snps.loc[rsid_list, :]
@@ -152,8 +158,11 @@ class AbstractGenoData:
     def _filter_base_samples(self, *iid_list: str):
         """A base function to filter genotype data by a list of IIDs (indexes).
 
-        Returns:
-            Type[self]: A new genetic data object of the same type.
+        :param iid_list: List of IIDs to keep.
+        :type iid_list: str
+
+        :return: A new genetic data object of the same type.
+        :rtype: Type[self]
         """
         genotypes = self.genotypes.filter(iid_list, axis=self.SAMPLES_AXIS) # type: ignore
         samples = self.samples.loc[iid_list, :]
@@ -162,11 +171,11 @@ class AbstractGenoData:
     def _filter_rsid(self, *rsid_list: str):
         """Filter snps based on rsid. Keep the listed SNPs.
 
-        Args:
-            *rsid_list (str): rsids to keep.
+        :param rsid_list: rsids to keep.
+        :type rsid_list: str
 
-        Returns:
-            self: Object of same type as parent filtered by rsid.
+        :return: Object of same type as parent filtered by rsid.
+        :rtype: Type[self]
         """
         rsid_intersection = set(self.rsids) & set(rsid_list)
         return self._filter_base_snps(*rsid_intersection)
@@ -174,11 +183,11 @@ class AbstractGenoData:
     def _filter_iid(self, *iid_list: str):
         """Filter samples based on iid. Keep the listed IIDs.
 
-        Args:
-            *iid_list (str): IIDs to keep.
+        :param iid_list: IIDs to keep.
+        :type iid_list: str
 
-        Returns:
-            self: Object of same type as parent filtered by iid.
+        :return: Object of same type as parent filtered by iid.
+        :rtype: Type[self]
         """
         iid_intersection = set(self.iids) & set(iid_list)
         return self._filter_base_samples(*iid_intersection)
@@ -186,8 +195,11 @@ class AbstractGenoData:
     def _filter_chr(self, *chr_list: int):
         """Filter genetic data by chromosome.
 
-        Returns:
-            self: Object of same type as parent filtered by chromsome.
+        :param chr_list: List of chromosomes to keep.
+        :type chr_list: int
+
+        :return: Object of same type as parent filtered by chromsome.
+        :rtype: Type[self]
         """
         rsids = self.snps.loc[self.snps[CHR].isin(chr_list), :].index.tolist()
         return self._filter_rsid(*rsids)
@@ -197,12 +209,14 @@ class AbstractGenoData:
         ):
         """Filter genetic data by base position.
 
-        Args:
-            bp_low (int | float): Bottom of base position interval.
-            bp_high (int | float): Top of base position interval.
+        :param bp_low: Bottom of base position interval.
+        :type bp_low: Union[int, float]
 
-        Returns:
-            self: Object of same type as parent filtered by base position.
+        :param bp_high: Top of base position interval.
+        :type bp_high: Union[int, float]
+
+        :return: Object of same type as parent filtered by base position.
+        :rtype: Type[self]
         """
         rsids = self.snps.loc[
             self.snps[BPOS].between(bp_low, bp_high), :].index.tolist()
@@ -214,9 +228,9 @@ class AbstractGenoData:
 
         Method name is taken from plink.
 
-        Returns:
-            pd.Series: A series indexed by IID showing the proportion of
-                genotypes that are missing for each sample.
+        :return: A series indexed by IID showing the proportion of genotypes
+            that are missing for each sample.
+        :rtype: pd.Series
         """
         missing_by_sample = self.genotypes.isna().sum(axis=self.SNP_AXIS)
         mind = missing_by_sample / self.n_snps
@@ -225,12 +239,12 @@ class AbstractGenoData:
     def _filter_mind(self, mind_threshold: float):
         """Filter based on mind.
 
-        Args:
-            mind_threshold (float): Samples with mind greater than this level
-                will be removed.
+        :param mind_threshold: Samples with mind greater than this level will be
+            removed.
+        :type mind_threshold: float
 
-        Returns:
-            Type[self]: Genotype data object filtered by MAF.
+        :return: Genotype data object filtered by MAF.
+        :rtype: Type[self]
         """
         # Select valid SNPs
         condition = self.mind <= mind_threshold
@@ -243,8 +257,8 @@ class AbstractGenoData:
     def max_mind(self) -> float:
         """Find the maximum mind.
 
-        Returns:
-            float: The value of the maximum mind.
+        :return: The value of the maximum mind.
+        :rtype: float
         """
         return self.mind.max()
 
@@ -254,8 +268,8 @@ class AbstractGenoData:
 
         Method name is taken from plink.
 
-        Returns:
-            pd.Series: Genotype missingness rate for each SNP, indexed by rsID.
+        :return: Genotype missingness rate for each SNP, indexed by rsID.
+        :rtype: pd.Series
         """
         missing_by_snp = self.genotypes.isna().sum(axis=self.SAMPLES_AXIS)
         geno = missing_by_snp / self.n_samples
@@ -264,12 +278,12 @@ class AbstractGenoData:
     def _filter_geno(self, geno_threshold: float):
         """Filters based on genotype missingness rate.
 
-        Args:
-            geno_threshold (float): SNPs with geno greater than this level will
-                be removed.
+        :param geno_threshold: SNPs with geno greater than this level will be
+            removed.
+        :type geno_threshold: float
 
-        Returns:
-            Type[self]: Genetic data object filtered by geno missingness rate.
+        :return: Genetic data object filtered by geno missingness rate.
+        :rtype: Type[self]
         """
         # Select valid SNPs
         condition = self.geno <= geno_threshold
@@ -282,8 +296,8 @@ class AbstractGenoData:
     def max_geno(self) -> float:
         """Find the maximum geno.
 
-        Returns:
-            float: The value of the maximum geno.
+        :return: The value of the maximum geno.
+        :rtype: float
         """
         return self.geno.max()
 
@@ -297,8 +311,10 @@ class AbstractGenoData:
         Any keyword arguments that do not match any members of the list will be
         ignored and a warning will be given.
 
-        Returns:
-            GenoData: A GenoData object filtered by all applicable filters.
+        :param kwargs: Keyword arguments to filter by.
+
+        :return: A genetic data object filtered by all applicable filters.
+        :rtype: Type[self]
         """
         geno_data = self
         for arg, val in kwargs.items():
@@ -317,18 +333,22 @@ class AbstractGenoData:
     def _sample_rsid(
             self,
             param: Union[int, float],
-            bit_generator: BitGenerator
+            bit_generator: Optional[BitGenerator] = None
         ):
         """Filter snps based on rsid. Keep a random subset of SNPs.
 
-        Args:
-            param (Union[int, float]): Number (int) or fraction (float) of SNPs
-                to keep.
-            bit_generator (BitGenerator): Bit generator to use for sampling.
+        :param param: Number (int) or fraction (float) of SNPs to keep.
+        :type param: Union[int, float]
 
-        Returns:
-            self: Object of same type as parent sampled by rsid.
+        :param bit_generator: Bit generator to use for sampling. If None, a
+            default bit generator will be spawned.
+        :type bit_generator: Optional[BitGenerator]
+
+        :return: Object of same type as parent sampled by rsid.
+        :rtype: Type[self]
         """
+        if bit_generator is None:
+            bit_generator = np.random.default_rng().bit_generator
         if isinstance(param, int):
             rsids = self.snps.sample(n=param, random_state=bit_generator)
         elif isinstance(param, float):
@@ -341,18 +361,22 @@ class AbstractGenoData:
     def _sample_iid(
             self,
             param: Union[int, float],
-            bit_generator: BitGenerator
+            bit_generator: Optional[BitGenerator]
         ):
         """Filter samples based on iid. Keep a random subset of IIDs.
 
-        Args:
-            param (Union[int, float]): Number (int) or fraction (float) of IIDs
-                to keep.
-            bit_generator (BitGenerator): Bit generator to use for sampling.
+        :param param: Number (int) or fraction (float) of IIDs to keep.
+        :type param: Union[int, float]
 
-        Returns:
-            self: Object of same type as parent filtered by iid.
+        :param bit_generator: Bit generator to use for sampling. If None, a
+            default bit generator will be spawned.
+        :type bit_generator: Optional[BitGenerator]
+
+        :return: Object of same type as parent sampled by iid.
+        :rtype: Type[self]
         """
+        if bit_generator is None:
+            bit_generator = np.random.default_rng().bit_generator
         if isinstance(param, int):
             iids = self.samples.sample(n=param, random_state=bit_generator)
         elif isinstance(param, float):
@@ -370,17 +394,20 @@ class AbstractGenoData:
         ):
         """Sample randomly from the genetic data.
 
-        Args:
-            rsid (Union[int, float]): Number (int) or percentage (float) of SNPs
-                to sample. If None, no sampling will occur.
-            iid (Union[int, float]): Number (int) or percentage (float) of
-                samples to sample. If None, no sampling will occur.
-            seed (int): Seed for random number generator. If None, a random
-                seed will be generated.
+        :param rsid: Number (int) or percentage (float) of SNPs to sample. If
+            None, no sampling will occur.
+        :type rsid: Optional[Union[int, float]]
 
-        Returns:
-            GenoData: A GenoData object with a random subset of SNPs and
-                samples.
+        :param iid: Number (int) or percentage (float) of samples to sample. If
+            None, no sampling will occur.
+        :type iid: Optional[Union[int, float]]
+
+        :param seed: Seed for random number generator. If None, a random seed
+            will be generated.
+        :type seed: Optional[int]
+
+        :return: A genetic data object with a random subset of SNPs and samples.
+        :rtype: Type[self]
         """
         rng = np.random.default_rng(seed).bit_generator
         geno_data = self
@@ -393,9 +420,11 @@ class AbstractGenoData:
     def flip_snps(self, *rsids: str):
         """Placeholder for flip snp methods in subclasses.
 
-        Raises:
-            NotImplementedError: This method is not implemented for an abstract
-                class.
+        :param rsids: List of rsids to flip.
+        :type rsids: str
+
+        :raises NotImplementedError: This method is not implemented for an
+            abstract class.
         """
         raise NotImplementedError
 
@@ -404,18 +433,15 @@ class AbstractGenoData:
         ) -> dict[int, list[str]]:
         """Split genetic data into blocks according to a list of rsIDs.
 
-        Args:
-            blocks_dict (Union[pd.Series, dict[str, int]]): Mapping from rsID
-                to block number. If a Series, the index must be rsIDs and the
-                values must be block numbers. If a dict, the keys must be rsIDs
-                and the values must be block numbers.
+        :param blocks_dict: Mapping from rsID to block number. If a Series, the
+            index must be rsIDs and the values must be block numbers. If a dict,
+            the keys must be rsIDs and the values must be block numbers.
+        :type blocks_dict: Union[pd.Series, dict[str, int]]
 
-        Raises:
-            ValueError: If each rsID is not mapped to a block.
+        :raises ValueError: If each rsID is not mapped to a block.
 
-        Returns:
-            dict[int, Type[AbstractGenoData]]: Mapping from block number to
-                GenoData object.
+        :return: Mapping from block number to list of rsIDs.
+        :rtype: dict[int, list[str]]
         """
         # Map from rsid to block
         ref_snps = self.snps.copy()
@@ -444,8 +470,8 @@ class IntGenoData(AbstractGenoData):
     def af(self) -> pd.Series:
         """Calculate the allele frequency of each SNP.
 
-        Returns:
-            pd.Series: Series of allele frequencies indexed by rsID.
+        :return: A series of allele frequencies indexed by rsID.
+        :rtype: pd.Series
         """
         # Calculate allele frequency
         allele_count = self.genotypes.sum(axis=self.SAMPLES_AXIS, skipna=True)
@@ -458,14 +484,13 @@ class IntGenoData(AbstractGenoData):
     def to_maf(af: float) -> float:
         """Convert a biallelic allele frequency to a minor allele frequency.
 
-        Args:
-            af (float): Allele frequency.
+        :param af: Allele frequency.
+        :type af: float
 
-        Raises:
-            ValueError: If af is not in [0, 1].
+        :raises ValueError: If af is not in [0, 1].
 
-        Returns:
-            float: Minor allele frequency.
+        :return: Minor allele frequency.
+        :rtype: float
         """
         if 0 <= af <= 0.5:
             maf = af
@@ -479,20 +504,19 @@ class IntGenoData(AbstractGenoData):
     def maf(self) -> pd.Series:
         """Calculate the minor allele frequency for each SNP.
 
-        Returns:
-            pd.Series: Series of minor allele frequencies indexed by rsID.
+        :return: A series of minor allele frequencies indexed by rsID.
+        :rtype: pd.Series
         """
         return self.af.map(self.to_maf)
 
     def _filter_maf(self, maf_threshold: float):
         """Filter SNPs by a minor allele frequency threshold.
 
-        Args:
-            maf_threshold (float): SNPs with MAF below this value should be
-                removed.
+        :param maf_threshold: SNPs with MAF below this value should be removed.
+        :type maf_threshold: float
 
-        Returns:
-            Type[IntGenoData]: New genodata object filtered by MAF.
+        :return: New genodata object filtered by MAF.
+        :rtype: Type[IntGenoData]
         """
         # Select valid SNPs
         condition = self.maf > maf_threshold
@@ -505,8 +529,8 @@ class IntGenoData(AbstractGenoData):
     def min_maf(self) -> float:
         """Find the minimim minor allele frequency.
 
-        Returns:
-            float: The minimum minor allele frequency.
+        :return: The minimum minor allele frequency.
+        :rtype: float
         """
         return self.maf.min()
 
@@ -514,8 +538,8 @@ class IntGenoData(AbstractGenoData):
     def n_hom1(self) -> pd.Series:
         """Number of samples homozygous in the reference allele.
 
-        Returns:
-            pd.Series: Count of homozygous (A1) samples by rsID.
+        :return: Count of homozygous (A1) samples by rsID.
+        :rtype: pd.Series
         """
         return (self.genotypes == 0).sum(skipna=True, axis=self.SAMPLES_AXIS)
 
@@ -523,8 +547,8 @@ class IntGenoData(AbstractGenoData):
     def n_hom2(self) -> pd.Series:
         """Number of samples homozygous in the alternate allele.
 
-        Returns:
-            pd.Series: Count of homozygous (A2) samples by rsID.
+        :return: Count of homozygous (A2) samples by rsID.
+        :rtype: pd.Series
         """
         return (self.genotypes == 2).sum(skipna=True, axis=self.SAMPLES_AXIS)
 
@@ -532,8 +556,8 @@ class IntGenoData(AbstractGenoData):
     def n_het(self) -> pd.Series:
         """Number of samples heterozygous.
 
-        Returns:
-            pd.Series: Count of heterozygous samples by rsID.
+        :return: Count of heterozygous samples by rsID.
+        :rtype: pd.Series
         """
         return (self.genotypes == 1).sum(skipna=True, axis=self.SAMPLES_AXIS)
 
@@ -555,14 +579,20 @@ class IntGenoData(AbstractGenoData):
 
         This function is vectorised, so can take numpy arrays as inputs.
 
-        Args:
-            het (int): Number of heterozygous samples observed.
-            rare (int): Number of rare allele observed.
-            n (int): Total number of alleles observed.
-            midp (bool): Apply midp adjustment.
+        :param het: Number of heterozygous samples observed.
+        :type het: int
 
-        Returns:
-            float: HWE p-value.
+        :param rare: Number of rare allele observed.
+        :type rare: int
+
+        :param n: Total number of alleles observed.
+        :type n: int
+
+        :param midp: Apply midp adjustment.
+        :type midp: bool
+
+        :return: HWE p-value.
+        :rtype: float
         """
         p_array = np.zeros(1 + rare)
 
@@ -616,8 +646,11 @@ class IntGenoData(AbstractGenoData):
     def hwe(self, midp: bool) -> pd.Series:
         """Calculate the exact HWE p-values for each SNP.
 
-        Returns:
-            pd.Series: HWE p-values indexed by rsID.
+        :param midp: Apply midp adjustment.
+        :type midp: bool
+
+        :return: A series of HWE p-values indexed by rsID.
+        :rtype: pd.Series
         """
         hom1, hom2, het = (
             x.to_numpy() for x in [self.n_hom1, self.n_hom2, self.n_het])
@@ -633,11 +666,11 @@ class IntGenoData(AbstractGenoData):
     def _filter_hwe(self, hwe_threshold: float):
         """Remove variants with HWE p-values below a certain threshold.
 
-        Args:
-            hwe_threshold (float): The p-value threshold.
+        :param hwe_threshold: The p-value threshold.
+        :type hwe_threshold: float
 
-        Returns:
-            GenoData: GenoData objected filtered by HWE p-value.
+        :return: GenoData objected filtered by HWE p-value.
+        :rtype: Type[IntGenoData]
         """
         hwe = self.hwe(False)
         rsids = hwe[hwe > hwe_threshold].index.tolist()
@@ -646,11 +679,11 @@ class IntGenoData(AbstractGenoData):
     def _filter_hwe_midp(self, hwe_threshold: float):
         """Reomve variants with HWE mid p-values below a certain threshold.
 
-        Args:
-            hwe_threshold (float): The mid p-value thershold.
+        :param hwe_threshold: The mid p-value thershold.
+        :type hwe_threshold: float
 
-        Returns:
-            GenoData: GenoData object filtered by HWE mid-p value.
+        :return: GenoData object filtered by HWE mid-p value.
+        :rtype: Type[IntGenoData]
         """
         hwe = self.hwe(True)
         rsids = hwe[hwe > hwe_threshold].index.tolist()
@@ -659,8 +692,11 @@ class IntGenoData(AbstractGenoData):
     def flip_snps(self, *rsids: str):
         """Flip A1 and A2 for the selected SNPs.
 
-        Returns:
-            Type[IntGenoData]: GenoData object.
+        :param rsids: List of rsids to flip.
+        :type rsids: str
+
+        :return: GenoData object.
+        :rtype: Type[IntGenoData]
         """
         # Flip genotypes
         genotypes = self.genotypes.copy()
@@ -676,8 +712,8 @@ class IntGenoData(AbstractGenoData):
     def standardised(self):
         """Standardise genotypes.
 
-        Returns:
-            StdGenoData: A standardised genotype data object.
+        :return: A standardised genotype data object.
+        :rtype: Type[StdGenoData]
         """
         mean_geno = self.genotypes.mean(axis=self.SAMPLES_AXIS, skipna=True)
         stderr_geno = self.genotypes.std(axis=self.SAMPLES_AXIS, skipna=True)
@@ -698,6 +734,10 @@ class IntGenoData(AbstractGenoData):
     def save(self, out: str):
         """
         Save the integer genotype data to a .bed/.bim/.fam fileset.
+
+        :param out: The path to save the data to. The path should not include
+            the file extension, which will be added automatically.
+        :type out: str
         """
         # Make iids
         iids = self.samples.index.tolist()
@@ -733,8 +773,11 @@ class StdGenoData(AbstractGenoData):
     def flip_snps(self, *rsids: str):
         """Flip A1 and A2 for the selected SNPs.
 
-        Returns:
-            Type[StdGenoData]: StdGenoData object.
+        :param rsids: List of rsids to flip.
+        :type rsids: str
+
+        :return: StdGenoData object.
+        :rtype: Type[StdGenoData]
         """
         rsids = list(rsids) # type: ignore
         # Flip genotypes
@@ -762,17 +805,22 @@ class StdGenoData(AbstractGenoData):
         ) -> dict[str, Union[np.ndarray, sp.spmatrix, pd.DataFrame]]:
         """Calculate a sparse windowed LD matrix from genotype data.
 
-        Args:
-            chrom (int): The chromosome for which to calculate the sparse LD
-                matrix.
-            window (int): The width of the window in bases.
-            sparse (bool): Whether to return a sparse matrix.
-            tol (float): The tolerance below which elements are set to zero.
+        :param chrom: The chromosome for which to calculate the sparse LD
+            matrix.
+        :type chrom: int
 
-        Returns:
-            dict[str, Union[np.ndarray, sp.spmatrix, pd.DataFrame]]:
-                A dictionary containing the LD matrix and variant information
-                for each block.
+        :param window: The width of the window in bases.
+        :type window: int
+
+        :param sparse: Whether to return a sparse matrix.
+        :type sparse: bool
+
+        :param tol: The tolerance below which elements are set to zero.
+        :type tol: float
+
+        :return: A dictionary containing the LD matrix and variant information
+            for each block.
+        :rtype: dict[str, Union[np.ndarray, sp.spmatrix, pd.DataFrame]]
         """
         geno_data = self.filter(chr=chrom)
         bpos = geno_data.snps[BPOS].to_numpy().reshape(-1)
@@ -805,17 +853,23 @@ class StdGenoData(AbstractGenoData):
         Note: These calculations are quite fast, so parallelisation may not
         always be necessary.
 
-        Args:
-            window (int): Set LD correlations to zero for all values separated
-                by a distance of greater than window.
-            n_cores (Optional[int]): Number of cores to use for parallelisation.
-                If None, defaults to the number of cores available.
-            sparse (bool): Whether to make sparse matrices.
-            tol (float): Tolerance for sparse matrix construction.
+        :param window: Set LD correlations to zero for all values separated by
+            a distance of greater than window. If None, the window will be set
+            to the maximum distance between SNPs.
+        :type window: Optional[int]
 
-        Returns:
-            dict[int, sp.csr_matrix]: Dictionary containing a sparse LD matrix
-                for each chromosome.
+        :param n_cores: Number of cores to use for parallelisation. If None,
+            defaults to the number of cores available.
+        :type n_cores: Optional[int]
+
+        :param sparse: Whether to make sparse matrices.
+        :type sparse: bool
+
+        :param tol: Tolerance for sparse matrix construction.
+        :type tol: float
+
+        :return: Dictionary containing a sparse LD matrix for each chromosome.
+        :rtype: dict[int, sp.csr_matrix]
         """
         chromosomes = self.snps[CHR].unique().tolist()
 
@@ -836,9 +890,8 @@ class StdGenoData(AbstractGenoData):
         Remove SNPs that are perfectly correlated with another SNP as these
         give no extra information and will cause the LD matrix to be singular.
 
-        Returns:
-            dict[str, Union[np.ndarray, pd.DataFrame]]: A dictionary containing
-                the LD matrix and variant information.
+        :return: A dictionary containing the LD matrix and variant information.
+        :rtype: dict[str, Union[np.ndarray, pd.DataFrame]]
         """
         geno_array = np.ascontiguousarray(self.genotypes.to_numpy())
         mat, _, rows_remove = make_cov(geno_array)
@@ -855,12 +908,11 @@ class StdGenoData(AbstractGenoData):
         Static method to calculate a block of the LD matrix. Used to parallelise
         LD matrix calculations.
 
-        Args:
-            block (Type[StdGenoData]): A block of genetic data.
+        :param block: A block of genetic data.
+        :type block: Type[StdGenoData]
 
-        Returns:
-            dict[str, Union[np.ndarray, pd.DataFrame]]: A dictionary containing
-                the LD matrix and variant information.
+        :return: A dictionary containing the LD matrix and variant information.
+        :rtype: dict[str, Union[np.ndarray, pd.DataFrame]]
         """
         return block._calculate_ldm() # type: ignore
 
@@ -872,14 +924,15 @@ class StdGenoData(AbstractGenoData):
         """Calculate a block-wise LD matrix, where the each block ends at one
         of the listed terminal rsids.
 
-        Args:
-            block_map (list[str]): Mapping of rsids to block numbers.
-            n_cores (Optional[int]): Number of cores to use for parallelisation.
-                If None, defaults to the number of cores available.
+        :param block_map: Mapping of rsids to block numbers.
+        :type block_map: Union[pd.Series, dict[str, int]]
 
-        Returns:
-            dict[int, dict[str, Union[np.ndarray, pd.DataFrame]]]:
-                A dictionary containing an LD matrix dictionary for each block.
+        :param n_cores: Number of cores to use for parallelisation. If None,
+            defaults to the number of cores available.
+        :type n_cores: Optional[int]
+
+        :return: A dictionary containing an LD matrix dictionary for each block.
+        :rtype: dict[int, dict[str, Union[np.ndarray, pd.DataFrame]]]
         """
         blocks = self._split_rsid(block_map)
         blocks_list = list(blocks.keys())
@@ -903,13 +956,14 @@ class StdGenoData(AbstractGenoData):
         ) -> tuple[np.ndarray, np.ndarray]:
         """Calculate a full GRM.
 
-        Args:
-            individuals (list[str]): List of individual IDs to include in the
-                GRM.
-            weights (dict[str, float]): Weights to apply to the GRM.
+        :param individuals: List of individual IDs to include in the GRM.
+        :type individuals: Optional[list[str]]
 
-        Returns:
-            np.ndarray: The GRM.
+        :param weights: Weights to apply to the GRM.
+        :type weights: Optional[pd.Series]
+
+        :return: The GRM.
+        :rtype: tuple[np.ndarray, np.ndarray]
         """
         if individuals is not None:
             gendata = self.filter(iid=individuals)
@@ -932,13 +986,14 @@ class StdGenoData(AbstractGenoData):
         ) -> GRM:
         """Calculate a full GRM.
 
-        Args:
-            individuals (list[str]): List of individual IDs to include in the
-                GRM.
-            weights (dict[str, float]): Weights to apply to the GRM.
+        :param individuals: List of individual IDs to include in the GRM.
+        :type individuals: Optional[list[str]]
 
-        Returns:
-            GRM: The GRM.
+        :param weights: Weights to apply to the GRM.
+        :type weights: Optional[dict[str, float]]
+
+        :return: The GRM.
+        :rtype: GRM
         """
         grm, non_missing = self._calculate_grm(individuals, weights) # type: ignore
         ids = self.samples.reset_index(drop=False).iloc[:, [0, 1]]

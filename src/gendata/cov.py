@@ -12,15 +12,19 @@ from numba import njit
 def cov(row_i: np.ndarray, row_j: np.ndarray) -> float:
     """Compute the covariance between two 1D numpy arrays.
 
-    Args:
-        row_i (np.ndarray): Numpy array of length n_obs.
-        row_j (np.ndarray): Numpy array of length n_obs.
-        n_obs (int): Number of observations for each array.
+    :math:`cov(X, Y) = \\frac{1}{n} \\sum_{i=1}^{n} (X_i - \\bar{X})(Y_i - \\bar{Y})`
 
-    Returns:
-        float: Covariance between row_i and row_j.
+    :param row_i: Numpy array of length n_obs.
+    :type row_i: np.ndarray
+
+    :param row_j: Numpy array of length n_obs.
+    :type row_j: np.ndarray
+
+    :return: Covariance between row_i and row_j.
+    :rtype: float
+
+    :raises ValueError: If the arrays do not have the same length.
     """
-
     return np.dot(row_i, row_j) / row_i.shape[0]
 
 @njit(fastmath=True)
@@ -29,13 +33,19 @@ def weighted_cov(
     ) -> float:
     """Compute the weighted covariance between two 1D numpy arrays.
 
-    Args:
-        row_i (np.ndarray): Numpy array of length n_obs.
-        row_j (np.ndarray): Numpy array of length n_obs.
-        weights (np.ndarray): Numpy array of length n_obs.
+    :math:`cov(X, Y) = \\frac{1}{\\sum w} \\sum_{i=1}^{n} w_i (X_i - \\bar{X})(Y_i - \\bar{Y})`
 
-    Returns:
-        float: Weighted covariance between row_i and row_j.
+    :param row_i: Numpy array of length n_obs.
+    :type row_i: np.ndarray
+
+    :param row_j: Numpy array of length n_obs.
+    :type row_j: np.ndarray
+
+    :param weights: Numpy array of length n_obs.
+    :type weights: np.ndarray
+
+    :return: Weighted covariance between row_i and row_j.
+    :rtype: float
     """
     return np.dot(row_i, row_j * weights) / np.sum(weights)
 
@@ -44,12 +54,14 @@ def weighted_cov(
 def cov_na(row_i: np.ndarray, row_j: np.ndarray) -> tuple[float, int]:
     """Compute the covariance between two 1D numpy arrays with nan elements.
 
-    Args:
-        row_i ([type]): 1D numpy array with n_i observations.
-        row_j ([type]): 1D numpy array with n_j observations.
+    :param row_i: 1D numpy array with n_i observations.
+    :type row_i: np.ndarray
 
-    Returns:
-        float: Covariance between row_i and row_j.
+    :param row_j: 1D numpy array with n_j observations.
+    :type row_j: np.ndarray
+
+    :return: Covariance between row_i and row_j.
+    :rtype: float
     """
     mult = row_i * row_j
     multsum = np.nansum(mult)
@@ -70,17 +82,28 @@ def make_spwindow_cov(
 
     Variables must be ordered by their position.
 
-    Args:
-        mat (np.ndarray): MxN Array to make covariance matrix for. Assumed
-            that variables are in rows and observations in columns.
-        position (np.ndarray): A length M vector recording the position of each
-            variable.
-        window (Union[int, float]): Only calculate the covariance between 2
-            variables if the distance between them is less than this.
+    :param mat: MxN Array to make covariance matrix for. Assumed that variables
+        are in rows and observations in columns.
+    :type mat: np.ndarray
 
-    Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: Covariance matrix
-            in sparse ijv format.
+    :param position: A length M vector recording the position of each variable.
+    :type position: np.ndarray
+
+    :param window: Only calculate the covariance between 2 variables if the
+        distance between them is less than this.
+    :type window: Union[int, float]
+
+    :param missing: A length M vector recording the missingness of each
+        variable. Defaults to None, in which case missingness will be
+        calculated.
+    :type missing: Optional[np.ndarray]
+
+    :param tol: Tolerance below which all values are set to 0. Defaults to
+        0.001.
+    :type tol: float
+
+    :return: Covariance matrix in sparse ijv format.
+    :rtype: tuple[np.ndarray, np.ndarray, np.ndarray, list]
     """
     n_var, n_obs = mat.shape
 
@@ -163,17 +186,29 @@ def make_window_cov(
         window: Union[int, float],
         missing: Optional[np.ndarray] = None
     ) -> np.ndarray:
-    """Makes a dense covariance matrix where
+    """Makes a dense covariance matrix where all elements for which distance
+    < window are set to zero.
 
-    Args:
-        mat (np.ndarray): [description]
-        position (np.ndarray): [description]
-        window (Union[int, float]): [description]
-        missing (Optional[np.ndarray], optional): [description]. Defaults to
-            None.
+    Variables must be ordered by their position.
 
-    Returns:
-        np.ndarray: [description]
+    :param mat: MxN Array to make covariance matrix for. Assumed that variables
+        are in rows and observations in columns.
+    :type mat: np.ndarray
+
+    :param position: A length M vector recording the position of each variable.
+    :type position: np.ndarray
+
+    :param window: Only calculate the covariance between 2 variables if the
+        distance between them is less than this.
+    :type window: Union[int, float]
+
+    :param missing: A length M vector recording the missingness of each
+        variable. Defaults to None, in which case missingness will be
+        calculated.
+    :type missing: Optional[np.ndarray]
+
+    :return: Covariance matrix in dense format.
+    :rtype: np.ndarray
     """
     n_var, n_obs = mat.shape
 
@@ -204,17 +239,17 @@ def make_cov(
     ) -> tuple[np.ndarray, np.ndarray, set[int]]:
     """Make a dense covariance matrix, allowing for missing data.
 
-    Args:
-        mat (np.ndarray): MxN array to make covariance matrix for. Assumed
-            that variables are in rows and observations in columns.
-        missing (Optional[np.ndarray], optional): A length M vector recording
-            the missingness of each variable. Defaults to None, in which case
-            missingness will be calculated.
+    :param mat: MxN array to make covariance matrix for. Assumed that variables
+        are in rows and observations in columns.
+    :type mat: np.ndarray
 
-    Returns:
-        np.ndarray: Covariance matrix in dense format.
-        np.ndarray: Number of observations used to calculate each covariance.
-        set[int]: Set of rows to remove from the matrix to avoid singularity.
+    :param missing: A length M vector recording the missingness of each
+        variable. Defaults to None, in which case missingness will be
+        calculated.
+    :type missing: Optional[np.ndarray]
+
+    :return: Covariance matrix in dense format.
+    :rtype: np.ndarray
     """
     n_var, n_obs = mat.shape
 
@@ -255,18 +290,20 @@ def make_weighted_cov(
     ) -> tuple[np.ndarray, np.ndarray, set[int]]:
     """Make a dense covariance matrix, allowing for missing data.
 
-    Args:
-        mat (np.ndarray): MxN array to make covariance matrix for. Assumed
-            that variables are in rows and observations in columns.
-        weights (np.ndarray): A length N vector of weights for each observation.
-        missing (Optional[np.ndarray], optional): A length M vector recording
-            the missingness of each variable. Defaults to None, in which case
-            missingness will be calculated.
+    :param mat: MxN array to make covariance matrix for. Assumed that variables
+        are in rows and observations in columns.
+    :type mat: np.ndarray
 
-    Returns:
-        np.ndarray: Covariance matrix in dense format.
-        np.ndarray: Number of observations used to calculate each covariance.
-        set[int]: Set of rows to remove from the matrix to avoid singularity.
+    :param weights: A length N vector of weights for each observation.
+    :type weights: np.ndarray
+
+    :param missing: A length M vector recording the missingness of each
+        variable. Defaults to None, in which case missingness will be
+        calculated.
+    :type missing: Optional[np.ndarray]
+
+    :return: Covariance matrix in dense format.
+    :rtype: np.ndarray
     """
     n_var, n_obs = mat.shape
 
